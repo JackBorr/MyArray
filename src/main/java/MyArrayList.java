@@ -20,15 +20,17 @@ public class MyArrayList<T> implements List<T> {
     }
 
     public boolean isEmpty() {
-        if(size==0)
+        if(size==0) {
             return true;
+        }
         return false;
     }
 
     public boolean contains(final Object o) {
         for(T element : tempTable) {
-            if(element.equals(o))
+            if(element.equals(o)) {
                 return true;
+            }
         }
         return false;
     }
@@ -47,7 +49,7 @@ public class MyArrayList<T> implements List<T> {
 
     public boolean add(final T t) {
         add(size, t);
-       return true;
+        return true;
     }
 
     public boolean remove(final Object o) {
