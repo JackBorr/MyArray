@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-
+import java.util.List;
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -105,5 +105,26 @@ class MyArrayListTest {
         catch (IndexOutOfBoundsException e) {
             assertEquals("toIndex = 15", e.getMessage());
         }
+    }
+
+    @Test
+    void test_sublist_fromIndex_less_than_toIndex() {
+        String[] table = {"raz", "dwa", "trzy"};
+        MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+        String[] subTable = {"dwa", "trzy"};
+        MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+        assertEquals(subMyArray, myArray.subList(1, 3));
+    }
+
+    @Test
+    void test_equals() {
+        String[] table = {"raz", "dwa", "trzy"};
+        MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+        MyArrayList<String> myArray1 = new MyArrayList<String>(Arrays.asList(table));
+        assertEquals(myArray, myArray1);
+        assertEquals(myArray1, myArray);
+        myArray1.add("cztery");
+        assertNotEquals(myArray, myArray1);
+        assertNotEquals(myArray1, myArray);
     }
 }

@@ -9,11 +9,12 @@ public class MyArrayList<T> implements List<T> {
     private int size;
 
     public MyArrayList() {
-        tempTable = (T[]) new Object[0];
+        tempTable =  (T[])new Object[0];
         size = 0;
     }
     public MyArrayList(Collection<? extends T> c) {
-            tempTable = (T[]) c.toArray();
+
+            tempTable = (T[])c.toArray();
             size = tempTable.length;
     }
 
@@ -107,7 +108,7 @@ public class MyArrayList<T> implements List<T> {
         createTable[index] = element;
         System.arraycopy(tempTable, index, createTable, index+1, size-index);
         size++;
-        tempTable = (T[]) createTable;
+        tempTable = (T[])createTable;
     }
 
     public T remove(final int index) {
@@ -152,5 +153,31 @@ public class MyArrayList<T> implements List<T> {
 
     public Spliterator<T> spliterator() {
         return null;
+    }
+
+    @Override
+    public int hashCode() {
+        return 17 * tempTable.hashCode() + 31 * size;
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof MyArrayList)){
+            return false;
+        }
+        if (obj == this){
+            return true;
+        }
+        MyArrayList<T> other = (MyArrayList<T>)obj;
+        if(other.size()!=tempTable.length){
+            return false;
+        }
+        for (int i=0; i<other.size(); i++){
+            if(!other.get(i).equals(tempTable[i])){
+                return false;
+            }
+        }
+        return true;
     }
 }
