@@ -1,5 +1,7 @@
 import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
+
 
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,5 +63,47 @@ class MyArrayListTest {
         int index = myArray.size();
         myArray.add("add");
         assertEquals("add", myArray.get(index));
+    }
+    @Test
+    void test_sublist_fromIndex_and_toIndex_has_the_same_value(){
+        String[] table ={"raz", "dwa", "trzy"};
+        MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+        assertNull(myArray.subList(1, 1));
+    }
+
+    @Test
+    void test_sublist_fromIndex_bigger_than_toIndex(){
+        String[] table ={"raz", "dwa", "trzy"};
+        MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+        try {
+            myArray.subList(2, 1);
+        }
+        catch (IllegalArgumentException e) {
+            assertEquals("fromIndex > toIndex", e.getMessage());
+        }
+    }
+
+    @Test
+    void test_sublist_fromIndex_less_than_zero(){
+        String[] table ={"raz", "dwa", "trzy"};
+        MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+        try {
+            myArray.subList(-8, 1);
+        }
+        catch (IndexOutOfBoundsException e) {
+            assertEquals("fromIndex = -8", e.getMessage());
+        }
+    }
+
+    @Test
+    void test_sublist_toIndex_bigger_than_size(){
+        String[] table ={"raz", "dwa", "trzy"};
+        MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+        try {
+            myArray.subList(1, 15);
+        }
+        catch (IndexOutOfBoundsException e) {
+            assertEquals("toIndex = 15", e.getMessage());
+        }
     }
 }

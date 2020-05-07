@@ -1,5 +1,7 @@
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.UnaryOperator;
+
 
 public class MyArrayList<T> implements List<T> {
 
@@ -70,6 +72,7 @@ public class MyArrayList<T> implements List<T> {
 
     public boolean removeAll(final Collection<?> c) {
         return false;
+
     }
 
     public boolean retainAll(final Collection<?> c) {
@@ -128,7 +131,23 @@ public class MyArrayList<T> implements List<T> {
     }
 
     public List<T> subList(final int fromIndex, final int toIndex) {
-        return null;
+        if (fromIndex>toIndex){
+            throw new IllegalArgumentException("fromIndex > toIndex");
+        }
+        if (fromIndex < 0)
+            throw new IndexOutOfBoundsException("fromIndex = " + fromIndex);
+        if (toIndex > size)
+            throw new IndexOutOfBoundsException("toIndex = " + toIndex);
+        if(fromIndex==toIndex){
+            return null;
+        }
+
+        T[] table = (T[]) new Object[toIndex-fromIndex];
+
+        for(int i=fromIndex; i<toIndex; i++){
+           table[i-fromIndex]=tempTable[i];
+        }
+        return new MyArrayList<T>(Arrays.asList(table));
     }
 
     public Spliterator<T> spliterator() {
