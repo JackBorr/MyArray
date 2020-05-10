@@ -67,6 +67,7 @@ public class MyArrayList<T> implements List<T> {
   public boolean remove(final Object o) {
     if (!(indexOf(o)==-1)){
       this.remove(indexOf(o));
+      size--;
       return true;
     } else {
     return false;
@@ -86,26 +87,44 @@ public class MyArrayList<T> implements List<T> {
   public boolean removeAll(final Collection<?> c) {
     Objects.requireNonNull(c);
     boolean result = false;
-    Object[] tabC = c.toArray();
-    for (Object o : tabC) {
-      if (this.contains(o)) {
+    for (Object o : c) {
+      while (this.contains(o)) {
         this.remove(o);
         result = true;
       }
     }
+    size = size - c.size();
     return result;
   }
 
   public boolean containsAll(final Collection<?> c) {
-    return false;
+    Objects.requireNonNull(c);
+    int index = 0;
+    for (Object o : c) {
+      if (this.contains(o)) {
+        index++;
+      }
+    }
+
+    return index>=c.size();
   }
 
   public boolean addAll(final Collection<? extends T> c) {
-    return false;
+    return addAll(size, c);
   }
 
   public boolean addAll(final int index, final Collection<? extends T> c) {
-    return false;
+    Objects.requireNonNull(c);
+    if (index <0 || index>size){
+      return false;
+    }
+    int i = index;
+    for (Object o : c){
+      this.add(i, (T)o);
+      i++;
+      size++;
+    }
+    return true;
   }
 
   public boolean retainAll(final Collection<?> c) {
@@ -273,7 +292,7 @@ public class MyArrayList<T> implements List<T> {
 
   @Override
   public int hashCode() {
-    return 17 * tempTable.hashCode() + 31 * size;
+    return 17 * Arrays.hashCode(tempTable) + 31 * size;
   }
 
   @Override
