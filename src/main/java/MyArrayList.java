@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.UnaryOperator;
 
@@ -41,10 +42,6 @@ public class MyArrayList<T> implements List<T> {
     return false;
   }
 
-  public Iterator<T> iterator() {
-    return null;
-  }
-
   public Object[] toArray() {
     return Arrays.copyOf(tempTable, size);
   }
@@ -68,11 +65,35 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public boolean remove(final Object o) {
+    if (!(indexOf(o)==-1)){
+      this.remove(indexOf(o));
+      return true;
+    } else {
     return false;
+    }
   }
 
   public T remove(final int index) {
-    return null;
+    T toRemove = tempTable[index];
+    Object[] createTable = new Object[size - 1];
+    System.arraycopy(tempTable, 0, createTable, 0, index);
+    System.arraycopy(tempTable, index+1, createTable, index, (size - 1) - index);
+    size--;
+    tempTable = (T[]) createTable;
+    return toRemove;
+  }
+
+  public boolean removeAll(final Collection<?> c) {
+    Objects.requireNonNull(c);
+    boolean result = false;
+    Object[] tabC = c.toArray();
+    for (Object o : tabC) {
+      if (this.contains(o)) {
+        this.remove(o);
+        result = true;
+      }
+    }
+    return result;
   }
 
   public boolean containsAll(final Collection<?> c) {
@@ -85,11 +106,6 @@ public class MyArrayList<T> implements List<T> {
 
   public boolean addAll(final int index, final Collection<? extends T> c) {
     return false;
-  }
-
-  public boolean removeAll(final Collection<?> c) {
-    return false;
-
   }
 
   public boolean retainAll(final Collection<?> c) {
@@ -119,19 +135,27 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public int indexOf(final Object o) {
-    return 0;
+    if (o == null) {
+      return -1;
+    }
+    for (int i=0; i<size; i++) {
+      if(tempTable[i].equals(o)) {
+        return i;
+      };
+    }
+    return -1;
   }
 
   public int lastIndexOf(final Object o) {
-    return 0;
-  }
-
-  public ListIterator<T> listIterator() {
-    return null;
-  }
-
-  public ListIterator<T> listIterator(final int index) {
-    return null;
+    if (o == null) {
+      return -1;
+    }
+    for (int i=size-1; i>=0; i--) {
+      if(tempTable[i].equals(o)) {
+        return i;
+      };
+    }
+    return -1;
   }
 
   public List<T> subList(final int fromIndex, final int toIndex) {
@@ -154,6 +178,93 @@ public class MyArrayList<T> implements List<T> {
       table[i - fromIndex] = tempTable[i];
     }
     return new MyArrayList<T>(Arrays.asList(table));
+  }
+
+  public Iterator<T> iterator() {
+
+    Iterator<T> iterator = new Iterator<T>() {
+
+      int index = 0;
+
+      @Override
+      public boolean hasNext() {
+        if(index < size && tempTable[index]!=null){
+          return true;
+        }
+        return false;
+      }
+
+      @Override
+      public T next() {
+        return tempTable[index];
+      }
+    };
+    return iterator;
+  }
+
+  public ListIterator<T> listIterator() {
+    return this.listIterator(0);
+  }
+
+  public ListIterator<T> listIterator(final int index) {
+
+    ListIterator<T> listIterator = new ListIterator<T>() {
+
+      int anInt = index;
+
+      @Override
+      public boolean hasNext() {
+        if(anInt < size && tempTable[anInt]!=null){
+          return true;
+        }
+        return false;
+      }
+
+      @Override
+      public T next() {
+        return tempTable[anInt++];
+      }
+
+      @Override
+      public boolean hasPrevious() {
+        if(anInt > 0 && tempTable[anInt]!=null){
+          return true;
+        }
+        return false;
+      }
+
+      @Override
+      public T previous() {
+        return tempTable[--anInt];
+      }
+
+      @Override
+      public int nextIndex() {
+        return anInt;
+      }
+
+      @Override
+      public int previousIndex() {
+        return anInt -1;
+      }
+
+      @Override
+      public void remove() {
+        MyArrayList.this.remove(anInt);
+      }
+
+      @Override
+      public void set(T t) {
+        MyArrayList.this.set(anInt, t);
+      }
+
+      @Override
+      public void add(T t) {
+        MyArrayList.this.add(t);
+      }
+    };
+
+    return listIterator;
   }
 
   public Spliterator<T> spliterator() {
