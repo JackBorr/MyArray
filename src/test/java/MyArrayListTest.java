@@ -134,7 +134,7 @@ class MyArrayListTest {
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     MyArrayList<String> myArray1 = new MyArrayList<String>(Arrays.asList(table));
-    assertEquals(myArray.equals(myArray1), myArray.hashCode()==myArray1.hashCode());
+    assertEquals(myArray.equals(myArray1), myArray.hashCode() == myArray1.hashCode());
   }
 
 }

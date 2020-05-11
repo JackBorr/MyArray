@@ -1,4 +1,3 @@
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
@@ -65,21 +64,21 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public boolean remove(final Object o) {
-    if (!(indexOf(o)==-1)){
+    if (!(indexOf(o) == -1)) {
       this.remove(indexOf(o));
       size--;
       return true;
     } else {
-    return false;
+      return false;
     }
   }
 
   public T remove(final int index) {
-    T toRemove = tempTable[index];
     Object[] createTable = new Object[size - 1];
     System.arraycopy(tempTable, 0, createTable, 0, index);
-    System.arraycopy(tempTable, index+1, createTable, index, (size - 1) - index);
+    System.arraycopy(tempTable, index + 1, createTable, index, (size - 1) - index);
     size--;
+    T toRemove = tempTable[index];
     tempTable = (T[]) createTable;
     return toRemove;
   }
@@ -106,7 +105,7 @@ public class MyArrayList<T> implements List<T> {
       }
     }
 
-    return index>=c.size();
+    return index >= c.size();
   }
 
   public boolean addAll(final Collection<? extends T> c) {
@@ -115,12 +114,12 @@ public class MyArrayList<T> implements List<T> {
 
   public boolean addAll(final int index, final Collection<? extends T> c) {
     Objects.requireNonNull(c);
-    if (index <0 || index>size){
+    if (index < 0 || index > size) {
       return false;
     }
     int i = index;
-    for (Object o : c){
-      this.add(i, (T)o);
+    for (Object o : c) {
+      this.add(i, (T) o);
       i++;
       size++;
     }
@@ -132,11 +131,13 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public void replaceAll(final UnaryOperator<T> operator) {
-
+    for (int i = 0; i < size; i++) {
+      tempTable[i] = operator.apply(tempTable[i]);
+    }
   }
 
   public void sort(final Comparator<? super T> c) {
-
+    Arrays.sort(tempTable, c);
   }
 
   public void clear() {
@@ -157,10 +158,10 @@ public class MyArrayList<T> implements List<T> {
     if (o == null) {
       return -1;
     }
-    for (int i=0; i<size; i++) {
-      if(tempTable[i].equals(o)) {
+    for (int i = 0; i < size; i++) {
+      if (tempTable[i].equals(o)) {
         return i;
-      };
+      }
     }
     return -1;
   }
@@ -169,10 +170,10 @@ public class MyArrayList<T> implements List<T> {
     if (o == null) {
       return -1;
     }
-    for (int i=size-1; i>=0; i--) {
-      if(tempTable[i].equals(o)) {
+    for (int i = size - 1; i >= 0; i--) {
+      if (tempTable[i].equals(o)) {
         return i;
-      };
+      }
     }
     return -1;
   }
@@ -203,14 +204,11 @@ public class MyArrayList<T> implements List<T> {
 
     Iterator<T> iterator = new Iterator<T>() {
 
-      int index = 0;
+      final int index = 0;
 
       @Override
       public boolean hasNext() {
-        if(index < size && tempTable[index]!=null){
-          return true;
-        }
-        return false;
+        return index < size && tempTable[index] != null;
       }
 
       @Override
@@ -233,10 +231,7 @@ public class MyArrayList<T> implements List<T> {
 
       @Override
       public boolean hasNext() {
-        if(anInt < size && tempTable[anInt]!=null){
-          return true;
-        }
-        return false;
+        return anInt < size && tempTable[anInt] != null;
       }
 
       @Override
@@ -246,10 +241,7 @@ public class MyArrayList<T> implements List<T> {
 
       @Override
       public boolean hasPrevious() {
-        if(anInt > 0 && tempTable[anInt]!=null){
-          return true;
-        }
-        return false;
+        return anInt > 0 && tempTable[anInt] != null;
       }
 
       @Override
@@ -264,7 +256,7 @@ public class MyArrayList<T> implements List<T> {
 
       @Override
       public int previousIndex() {
-        return anInt -1;
+        return anInt - 1;
       }
 
       @Override
