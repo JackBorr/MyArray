@@ -137,4 +137,93 @@ class MyArrayListTest {
     assertEquals(myArray.equals(myArray1), myArray.hashCode() == myArray1.hashCode());
   }
 
+  @Test
+  void test_indexOf() {
+    String[] table = {"raz", "dwa", "trzy"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    assertEquals(2, myArray.indexOf("trzy"));
+    assertEquals(-1, myArray.indexOf("pięc"));
+  }
+
+  @Test
+  void test_remove_index_param() {
+    String[] table = {"raz", "dwa", "trzy"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] subTable = {"raz", "dwa"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+    myArray.remove(2);
+    assertEquals(subMyArray, myArray);
+  }
+
+  @Test
+  void test_remove_object_param() {
+    String[] table = {"raz", "dwa", "trzy"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] subTable = {"raz", "trzy"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+    myArray.remove("dwa");
+    assertEquals(subMyArray, myArray);
+  }
+
+  @Test
+  void test_removeAll() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] subTable = {"dwa", "trzy"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+    String[] tableToRemove = {"raz", "pięć", "sześć", "cztery"};
+    myArray.removeAll(Arrays.asList(tableToRemove));
+    assertEquals(subMyArray, myArray);
+  }
+
+  @Test
+  void test_containAll() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] subTable = {"dwa", "trzy", "trzy", "raz"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+    assertTrue(myArray.containsAll(subMyArray));
+  }
+
+  @Test
+  void test_addAll_param_index_and_list() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] addTable = {"raz", "dwa", "trzy", "raz", "dwa", "cztery"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(addTable));
+    String[] tableToAdd = {"raz", "dwa"};
+    myArray.addAll(3, Arrays.asList(tableToAdd));
+    assertEquals(subMyArray, myArray);
+  }
+
+  @Test
+  void test_addAll_param_list() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] addTable = {"raz", "dwa", "trzy", "cztery", "raz", "dwa"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(addTable));
+    String[] tableToAdd = {"raz", "dwa"};
+    myArray.addAll(Arrays.asList(tableToAdd));
+    assertEquals(subMyArray, myArray);
+  }
+
+  @Test
+  void test_sort() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] subTable = {"cztery", "dwa", "raz", "trzy"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+    myArray.sort(String::compareTo);
+    assertEquals(myArray, subMyArray);
+  }
+
+  @Test
+  void test_replaceAll() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] subTable = {"RAZ", "DWA", "TRZY", "CZTERY"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+    myArray.replaceAll(s -> s.toUpperCase());
+    assertEquals(subMyArray, myArray);
+  }
 }

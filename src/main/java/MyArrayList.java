@@ -64,9 +64,9 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public boolean remove(final Object o) {
-    if (!(indexOf(o) == -1)) {
-      this.remove(indexOf(o));
-      size--;
+    int index = indexOf(o);
+    if (!(index == -1)) {
+      remove(index);
       return true;
     } else {
       return false;
@@ -92,14 +92,15 @@ public class MyArrayList<T> implements List<T> {
         result = true;
       }
     }
-    size = size - c.size();
     return result;
   }
 
   public boolean containsAll(final Collection<?> c) {
     Objects.requireNonNull(c);
     int index = 0;
-    for (Object o : c) {
+    List<Object> rrr = (List<Object>) c;
+    for (Object o : rrr) {
+      String oj = o.toString();
       if (this.contains(o)) {
         index++;
       }
@@ -121,7 +122,6 @@ public class MyArrayList<T> implements List<T> {
     for (Object o : c) {
       this.add(i, (T) o);
       i++;
-      size++;
     }
     return true;
   }
@@ -204,23 +204,23 @@ public class MyArrayList<T> implements List<T> {
 
     Iterator<T> iterator = new Iterator<T>() {
 
-      final int index = 0;
+      int index = 0;
 
       @Override
       public boolean hasNext() {
-        return index < size && tempTable[index] != null;
+        return (index < size) && (tempTable[index] != null);
       }
 
       @Override
       public T next() {
-        return tempTable[index];
+        return tempTable[index++];
       }
     };
     return iterator;
   }
 
   public ListIterator<T> listIterator() {
-    return this.listIterator(0);
+    return listIterator(0);
   }
 
   public ListIterator<T> listIterator(final int index) {
@@ -231,7 +231,7 @@ public class MyArrayList<T> implements List<T> {
 
       @Override
       public boolean hasNext() {
-        return anInt < size && tempTable[anInt] != null;
+        return (anInt < size) && (tempTable[anInt] != null);
       }
 
       @Override
@@ -241,7 +241,7 @@ public class MyArrayList<T> implements List<T> {
 
       @Override
       public boolean hasPrevious() {
-        return anInt > 0 && tempTable[anInt] != null;
+        return (anInt > 0) && (tempTable[anInt] != null);
       }
 
       @Override
@@ -279,7 +279,7 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public Spliterator<T> spliterator() {
-    return null;
+    return Arrays.spliterator(tempTable);
   }
 
   @Override
@@ -298,7 +298,7 @@ public class MyArrayList<T> implements List<T> {
     if (obj == this) {
       return true;
     }
-    MyArrayList<T> other = (MyArrayList<T>) obj;
+    List<T> other = (List<T>) obj;
     if (other.size() != tempTable.length) {
       return false;
     }
@@ -310,4 +310,12 @@ public class MyArrayList<T> implements List<T> {
     return true;
   }
 
+  @Override
+  public String toString() {
+    String result = "";
+    for (Object o : tempTable) {
+      result = result + ", " + o;
+    }
+    return super.toString() + " tablica: " + tempTable.length + " size: " + size + " " + result;
+  }
 }
