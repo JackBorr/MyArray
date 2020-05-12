@@ -226,4 +226,23 @@ class MyArrayListTest {
     myArray.replaceAll(s -> s.toUpperCase());
     assertEquals(subMyArray, myArray);
   }
+
+  @Test
+  void test_retainAll() {
+    String[] table = {"raz", "dwa", "trzy", "cztery", "dwa"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] retainTable = {"raz", "dwa", "dwa"};
+    MyArrayList<String> retainMyArray = new MyArrayList<String>(Arrays.asList(retainTable));
+    String[] tableToAdd = {"raz", "dwa", "pięć"};
+    myArray.retainAll(Arrays.asList(tableToAdd));
+    assertEquals(retainMyArray, myArray);
+  }
+
+  @Test
+  void test_toArray_return_T1_array() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] createTable = myArray.toArray(new String[4]);
+    assertTrue(Arrays.equals(table, createTable));
+  }
 }

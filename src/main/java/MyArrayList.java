@@ -46,7 +46,14 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public <T1> T1[] toArray(final T1[] a) {
-    return null;
+    if (a.length < size) {
+      return (T1[]) Arrays.copyOf(tempTable, size, a.getClass());
+    }
+    System.arraycopy(tempTable, 0, a, 0, size);
+    if (a.length > size) {
+      a[size] = null;
+    }
+    return a;
   }
 
   public boolean add(final T t) {
@@ -127,7 +134,17 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public boolean retainAll(final Collection<?> c) {
-    return false;
+    Objects.requireNonNull(c);
+    boolean result = false;
+    for (Object elTemp : tempTable) {
+      if (c.contains(elTemp)) {
+        continue;
+      } else {
+        this.remove(elTemp);
+        result = true;
+      }
+    }
+    return result;
   }
 
   public void replaceAll(final UnaryOperator<T> operator) {
