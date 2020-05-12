@@ -105,9 +105,8 @@ public class MyArrayList<T> implements List<T> {
   public boolean containsAll(final Collection<?> c) {
     Objects.requireNonNull(c);
     int index = 0;
-    List<Object> rrr = (List<Object>) c;
-    for (Object o : rrr) {
-      String oj = o.toString();
+    List<Object> list = (List<Object>) c;
+    for (Object o : list) {
       if (this.contains(o)) {
         index++;
       }
@@ -248,6 +247,9 @@ public class MyArrayList<T> implements List<T> {
 
       @Override
       public boolean hasNext() {
+        if ((anInt > size) || (anInt < 0)) {
+          throw new IndexOutOfBoundsException("index = " + index);
+        }
         return (anInt < size) && (tempTable[anInt] != null);
       }
 
@@ -258,6 +260,9 @@ public class MyArrayList<T> implements List<T> {
 
       @Override
       public boolean hasPrevious() {
+        if ((anInt > size) || (anInt < 0)) {
+          throw new IndexOutOfBoundsException("index = " + index);
+        }
         return (anInt > 0) && (tempTable[anInt] != null);
       }
 
@@ -288,7 +293,7 @@ public class MyArrayList<T> implements List<T> {
 
       @Override
       public void add(T t) {
-        MyArrayList.this.add(t);
+        MyArrayList.this.add(anInt, t);
       }
     };
 
@@ -327,12 +332,4 @@ public class MyArrayList<T> implements List<T> {
     return true;
   }
 
-  @Override
-  public String toString() {
-    String result = "";
-    for (Object o : tempTable) {
-      result = result + ", " + o;
-    }
-    return super.toString() + " tablica: " + tempTable.length + " size: " + size + " " + result;
-  }
 }

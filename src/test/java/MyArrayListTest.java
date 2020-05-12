@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.ListIterator;
 import org.junit.jupiter.api.Test;
 
 class MyArrayListTest {
@@ -56,6 +58,7 @@ class MyArrayListTest {
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     myArray.add(1, "add");
+    assertEquals(4, myArray.size());
     assertEquals("add", myArray.get(1));
   }
 
@@ -65,6 +68,7 @@ class MyArrayListTest {
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     int index = myArray.size();
     myArray.add("add");
+    assertEquals(4, myArray.size());
     assertEquals("add", myArray.get(index));
   }
 
@@ -245,4 +249,124 @@ class MyArrayListTest {
     String[] createTable = myArray.toArray(new String[4]);
     assertTrue(Arrays.equals(table, createTable));
   }
+
+  @Test
+  void test_iterator_hasNext_empty_Collection() {
+    MyArrayList<String> myArray = new MyArrayList<String>();
+    Iterator<String> iterator = myArray.iterator();
+    assertFalse(iterator.hasNext());
+  }
+
+  @Test
+  void test_iterator_hasNext_noempty_Collection() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    Iterator<String> iterator = myArray.iterator();
+    assertTrue(iterator.hasNext());
+  }
+
+  @Test
+  void test_iterator_next_no_empty_Collection() {
+    String[] table = {"raz"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    Iterator<String> iterator = myArray.iterator();
+    assertTrue(iterator.hasNext());
+    assertEquals("raz", iterator.next());
+    assertFalse(iterator.hasNext());
+  }
+
+  @Test
+  void test_iterator_with_index_hasNext_empty_Collection() {
+    MyArrayList<String> myArray = new MyArrayList<String>();
+    ListIterator<String> iterator = myArray.listIterator(0);
+    assertFalse(iterator.hasNext());
+  }
+
+  @Test
+  void test_iterator_with_index_hasNext_no_empty_Collection() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(2);
+    assertTrue(iterator.hasNext());
+  }
+
+  @Test
+  void test_iterator_with_index_hasPrevious_empty_Collection() {
+    MyArrayList<String> myArray = new MyArrayList<String>();
+    ListIterator<String> iterator = myArray.listIterator(0);
+    assertFalse(iterator.hasPrevious());
+  }
+
+  @Test
+  void test_iterator_with_index_hasPrevious_no_empty_Collection() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(1);
+    assertTrue(iterator.hasPrevious());
+  }
+
+  @Test
+  void test_iterator_with_index_next_no_empty_Collection() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(1);
+    assertEquals("dwa", iterator.next());
+  }
+
+  @Test
+  void test_iterator_with_index_previous_no_empty_Collection() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(1);
+    assertEquals("raz", iterator.previous());
+  }
+
+  @Test
+  void test_iterator_with_index_next_index() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(1);
+    iterator.next();
+    assertEquals(2, iterator.nextIndex());
+  }
+
+  @Test
+  void test_iterator_with_index_previous_next_index() {
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(2);
+    iterator.previous();
+    assertEquals(0, iterator.previousIndex());
+  }
+
+  @Test
+  void test_iterator_with_index_add() {
+    String[] table = {"raz", "dwa", "trzy"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(1);
+    iterator.add("add");
+    assertEquals(4, myArray.size());
+    assertEquals("add", myArray.get(1));
+  }
+
+  @Test
+  void test_iterator_with_index_set() {
+    String[] table = {"raz", "dwa", "trzy"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(1);
+    iterator.set("add");
+    assertEquals("add", myArray.get(1));
+  }
+
+  @Test
+  void test_iterator_with_index_remove() {
+    String[] table = {"raz", "dwa", "trzy"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    String[] subTable = {"raz", "trzy"};
+    MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+    ListIterator<String> iterator = myArray.listIterator(1);
+    iterator.remove();
+    assertEquals(subMyArray, myArray);
+  }
+
 }
