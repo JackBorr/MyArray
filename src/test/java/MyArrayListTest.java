@@ -3,370 +3,715 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ListIterator;
 import org.junit.jupiter.api.Test;
 
 class MyArrayListTest {
 
   @Test
-  void test_size() {
+  void testSize() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    assertEquals(table.length, myArray.size());
+
+    // when
+    int size = myArray.size();
+
+    // then
+    assertEquals(table.length, size);
   }
 
   @Test
-  void test_isEmpty_empty_array() {
+  void testIsEmptyEmptyArray() {
+    // given
     MyArrayList<String> myArray = new MyArrayList<String>();
-    assertTrue(myArray.isEmpty());
+
+    // when
+    boolean isEmpty = myArray.isEmpty();
+
+    // then
+    assertTrue(isEmpty);
   }
 
   @Test
-  void test_isEmpty_not_empty_array() {
+  void testIsEmptyNotEmptyArray() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    assertFalse(myArray.isEmpty());
+
+    // when
+    boolean isEmpty = myArray.isEmpty();
+
+    // then
+    assertFalse(isEmpty);
   }
 
   @Test
-  void test_contains_not_contain_object() {
+  void testContainsNotContainObject() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    assertFalse(myArray.contains("test"));
+
+    // when
+    boolean contain = myArray.contains("test");
+
+    // then
+    assertFalse(contain);
   }
 
   @Test
-  void test_contains_method_contain_object() {
+  void testContainsMethodContainCbject() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    assertTrue(myArray.contains("dwa"));
+
+    // when
+    boolean contain = myArray.contains("dwa");
+
+    // then
+    assertTrue(contain);
   }
 
   @Test
-  void test_get_method() {
+  void testGetMethod() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    assertEquals("dwa", myArray.get(1));
+
+    // when
+    String element = myArray.get(1);
+
+    // then
+    assertEquals("dwa", element);
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.get(-1));
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.get(3));
   }
 
   @Test
-  void test_add_method_with_id_and_object_params() {
+  void testAddMethodWithIdAndObjectParams() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+
+    // when
     myArray.add(1, "add");
+
+    // then
     assertEquals(4, myArray.size());
     assertEquals("add", myArray.get(1));
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.add(-1, "test"));
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.add(8, "test"));
   }
 
   @Test
-  void test_add_method_with_object_param() {
+  void testAddMethodWithObjectParam() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+
+    // when
     int index = myArray.size();
     myArray.add("add");
+
+    // then
     assertEquals(4, myArray.size());
     assertEquals("add", myArray.get(index));
   }
 
   @Test
-  void test_sublist_fromIndex_and_toIndex_has_the_same_value() {
+  void testSublistFromIndexAndToIndexHasTheSameValue() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    assertNull(myArray.subList(1, 1));
+
+    // when
+    List<String> elements = myArray.subList(1, 1);
+
+    // then
+    assertNull(elements);
   }
 
   @Test
-  void test_sublist_fromIndex_bigger_than_toIndex() {
+  void testSublistFromIndexBiggerThanToIndex() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    try {
+
+    // when + then
+    assertThrows(IllegalArgumentException.class, () -> {
       myArray.subList(2, 1);
-    } catch (IllegalArgumentException e) {
-      assertEquals("fromIndex > toIndex", e.getMessage());
-    }
+    });
   }
 
   @Test
-  void test_sublist_fromIndex_less_than_zero() {
+  void testSublistFromIndexLessThanZero() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    try {
+
+    // when + then
+    assertThrows(IndexOutOfBoundsException.class, () -> {
       myArray.subList(-8, 1);
-    } catch (IndexOutOfBoundsException e) {
-      assertEquals("fromIndex = -8", e.getMessage());
-    }
+    });
   }
 
   @Test
-  void test_sublist_toIndex_bigger_than_size() {
+  void testSublistToIndexBiggerThanSize() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    try {
+
+    // when + then
+    assertThrows(IndexOutOfBoundsException.class, () -> {
       myArray.subList(1, 15);
-    } catch (IndexOutOfBoundsException e) {
-      assertEquals("toIndex = 15", e.getMessage());
-    }
+    });
   }
 
   @Test
-  void test_sublist_fromIndex_less_than_toIndex() {
+  void testSublistFromIndexLessThanToIndex() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] subTable = {"dwa", "trzy"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
-    assertEquals(subMyArray, myArray.subList(1, 3));
+
+    // when
+    List<String> createSub = myArray.subList(1, 3);
+
+    // then
+    assertEquals(subMyArray, createSub);
   }
 
   @Test
-  void test_equals() {
+  void testEqualsReturnTrue() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     MyArrayList<String> myArray1 = new MyArrayList<String>(Arrays.asList(table));
+    List<String> myArray3 = myArray;
+
+    // when + then
     assertEquals(myArray, myArray1);
     assertEquals(myArray1, myArray);
-    myArray1.add("cztery");
-    assertNotEquals(myArray, myArray1);
-    assertNotEquals(myArray1, myArray);
+    assertEquals(myArray, myArray3);
   }
 
   @Test
-  void test_HashCode() {
+  void testEqualsReturnFalse() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     MyArrayList<String> myArray1 = new MyArrayList<String>(Arrays.asList(table));
-    assertEquals(myArray.equals(myArray1), myArray.hashCode() == myArray1.hashCode());
+    MyArrayList<String> myArray2 = new MyArrayList<String>(Arrays.asList(table));
+
+    // when
+    myArray.add("cztery");
+    myArray2.set(0, "raz_raz");
+
+    // then
+    assertNotEquals(myArray, myArray1);
+    assertNotEquals(myArray1, myArray);
+    assertNotEquals(myArray, null);
+    assertNotEquals(myArray, new String("test"));
+    assertNotEquals(myArray1, myArray2);
   }
 
   @Test
-  void test_indexOf() {
+  void testHashCode() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    assertEquals(2, myArray.indexOf("trzy"));
-    assertEquals(-1, myArray.indexOf("pięc"));
+    MyArrayList<String> myArray1 = new MyArrayList<String>(Arrays.asList(table));
+
+    // when
+    boolean isHashCodesEqual = myArray.hashCode() == myArray1.hashCode();
+
+    // then
+    assertEquals(myArray.equals(myArray1), isHashCodesEqual);
   }
 
   @Test
-  void test_remove_index_param() {
+  void testIndexOf() {
+    // given
+    String[] table = {"raz", "dwa", "trzy"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+
+    // when
+    int index1 = myArray.indexOf("trzy");
+    int index2 = myArray.indexOf("pięc");
+    int index3 = myArray.indexOf(null);
+
+    // then
+    assertEquals(2, index1);
+    assertEquals(-1, index2);
+    assertEquals(-1, index3);
+  }
+
+  @Test
+  void testLastIndexOf() {
+    // given
+    String[] table = {"raz", "dwa", "trzy", "dwa", "sześć"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+
+    // when
+    int index1 = myArray.lastIndexOf("dwa");
+    int index2 = myArray.lastIndexOf("pięc");
+    int index3 = myArray.lastIndexOf(null);
+
+    // then
+    assertEquals(3, index1);
+    assertEquals(-1, index2);
+    assertEquals(-1, index3);
+  }
+
+  @Test
+  void testRemoveIndexParam() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] subTable = {"raz", "dwa"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+
+    // when
     myArray.remove(2);
+
+    // then
     assertEquals(subMyArray, myArray);
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.remove(-1));
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.remove(8));
   }
 
   @Test
-  void test_remove_object_param() {
+  void testRemoveObjectParam() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] subTable = {"raz", "trzy"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+
+    // when
     myArray.remove("dwa");
+
+    // then
     assertEquals(subMyArray, myArray);
+    assertFalse(myArray.remove("pięć"));
   }
 
   @Test
-  void test_removeAll() {
+  void testRemoveAll() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] subTable = {"dwa", "trzy"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
     String[] tableToRemove = {"raz", "pięć", "sześć", "cztery"};
+
+    // when
     myArray.removeAll(Arrays.asList(tableToRemove));
+
+    // then
     assertEquals(subMyArray, myArray);
   }
 
   @Test
-  void test_containAll() {
+  void testContainAll() {
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] subTable = {"dwa", "trzy", "trzy", "raz"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
-    assertTrue(myArray.containsAll(subMyArray));
+
+    // when
+    boolean isContainAll = myArray.containsAll(subMyArray);
+
+    // then
+    assertTrue(isContainAll);
   }
 
   @Test
-  void test_addAll_param_index_and_list() {
+  void testAddAllParamIndexAndList() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] addTable = {"raz", "dwa", "trzy", "raz", "dwa", "cztery"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(addTable));
     String[] tableToAdd = {"raz", "dwa"};
+
+    // when
     myArray.addAll(3, Arrays.asList(tableToAdd));
+    int indexUnderZero = -1;
+    int indexBiggerThanSize = 7;
+
+    // then
     assertEquals(subMyArray, myArray);
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.addAll(indexUnderZero, subMyArray));
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.addAll(indexBiggerThanSize, subMyArray));
   }
 
   @Test
-  void test_addAll_param_list() {
+  void testAddAllParamList() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] addTable = {"raz", "dwa", "trzy", "cztery", "raz", "dwa"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(addTable));
     String[] tableToAdd = {"raz", "dwa"};
+
+    // when
     myArray.addAll(Arrays.asList(tableToAdd));
+
+    // then
     assertEquals(subMyArray, myArray);
   }
 
   @Test
-  void test_sort() {
+  void testSort() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] subTable = {"cztery", "dwa", "raz", "trzy"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+
+    // when
     myArray.sort(String::compareTo);
+
+    // then
     assertEquals(myArray, subMyArray);
   }
 
   @Test
-  void test_replaceAll() {
+  void testReplaceAll() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] subTable = {"RAZ", "DWA", "TRZY", "CZTERY"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
+
+    // when
     myArray.replaceAll(s -> s.toUpperCase());
+
+    // then
     assertEquals(subMyArray, myArray);
   }
 
   @Test
-  void test_retainAll() {
+  void testRetainAll() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery", "dwa"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] retainTable = {"raz", "dwa", "dwa"};
     MyArrayList<String> retainMyArray = new MyArrayList<String>(Arrays.asList(retainTable));
     String[] tableToAdd = {"raz", "dwa", "pięć"};
+
+    // when
     myArray.retainAll(Arrays.asList(tableToAdd));
+
+    // then
     assertEquals(retainMyArray, myArray);
   }
 
   @Test
-  void test_toArray_return_T1_array() {
-    String[] table = {"raz", "dwa", "trzy", "cztery"};
-    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
-    String[] createTable = myArray.toArray(new String[4]);
+  void testToArrayReturnTArray() {
+    // given
+    MyArrayList<String> myArray = new MyArrayList<String>();
+    String[] table = {"raz", "dwa"};
+
+    // when
+    myArray.add("raz");
+    myArray.add("dwa");
+    Object[] createTable = myArray.toArray();
+
+    // then
     assertTrue(Arrays.equals(table, createTable));
   }
 
   @Test
-  void test_iterator_hasNext_empty_Collection() {
-    MyArrayList<String> myArray = new MyArrayList<String>();
-    Iterator<String> iterator = myArray.iterator();
-    assertFalse(iterator.hasNext());
+  void testToArrayReturnT1Array() {
+    // given
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+
+    // when
+    String[] createTable = myArray.toArray(new String[4]);
+
+    // then
+    assertTrue(Arrays.equals(table, createTable));
   }
 
   @Test
-  void test_iterator_hasNext_noempty_Collection() {
+  void testIteratorHasNextEmptyCollection() {
+    // given
+    MyArrayList<String> myArray = new MyArrayList<String>();
+    Iterator<String> iterator = myArray.iterator();
+
+    // when
+    boolean isHasNext = iterator.hasNext();
+
+    // then
+    assertFalse(isHasNext);
+  }
+
+  @Test
+  void testIteratorHasNextNoEmptyCollection() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     Iterator<String> iterator = myArray.iterator();
-    assertTrue(iterator.hasNext());
+
+    // when
+    boolean isHasNext = iterator.hasNext();
+
+    // then
+    assertTrue(isHasNext);
   }
 
   @Test
-  void test_iterator_next_no_empty_Collection() {
+  void testIteratorHasNextNoEmptyCollectionOneNullElement() {
+    // given
+    String[] table = {"raz", "dwa", null};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    Iterator<String> iterator = myArray.iterator();
+
+    // when
+    iterator.next();
+    iterator.next();
+    boolean isHasNext = iterator.hasNext();
+
+    // then
+    assertFalse(isHasNext);
+  }
+
+  @Test
+  void testIteratorNextNoEmptyCollection() {
+    // given
     String[] table = {"raz"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     Iterator<String> iterator = myArray.iterator();
+
+    // when + then
     assertTrue(iterator.hasNext());
     assertEquals("raz", iterator.next());
     assertFalse(iterator.hasNext());
   }
 
   @Test
-  void test_iterator_with_index_hasNext_empty_Collection() {
+  void testIteratorWithIndexHasNextEmptyCollection() {
+    // given
     MyArrayList<String> myArray = new MyArrayList<String>();
     ListIterator<String> iterator = myArray.listIterator(0);
-    assertFalse(iterator.hasNext());
+
+    // when
+    boolean isHasNext = iterator.hasNext();
+
+    // then
+    assertFalse(isHasNext);
   }
 
   @Test
-  void test_iterator_with_index_hasNext_no_empty_Collection() {
+  void testListIteratorWithIndexHasNextNoEmptyCollection() {
+    // given
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator();
+
+    // when
+    boolean isHasNext = iterator.hasNext();
+
+    // then
+    assertTrue(isHasNext);
+    assertEquals("raz", iterator.next());
+  }
+
+  @Test
+  void testIteratorWithIndexHasNextNoEmptyCollection() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     ListIterator<String> iterator = myArray.listIterator(2);
-    assertTrue(iterator.hasNext());
+
+    // when
+    boolean isHasNext = iterator.hasNext();
+
+    // then
+    assertTrue(isHasNext);
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.listIterator(-1));
+    assertThrows(IndexOutOfBoundsException.class, () -> myArray.listIterator(5));
   }
 
   @Test
-  void test_iterator_with_index_hasPrevious_empty_Collection() {
+  void testIteratorWithIndexHasNextNoEmptyCollectionOneNullElement() {
+    // given
+    String[] table = {"raz", "dwa", "trzy", "cztery", null};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(4);
+
+    // when
+    boolean isHasNext = iterator.hasNext();
+
+    // then
+    assertFalse(isHasNext);
+  }
+
+  @Test
+  void testIteratorWithIndexHasPreviousEmptyCollection() {
+    // given
     MyArrayList<String> myArray = new MyArrayList<String>();
     ListIterator<String> iterator = myArray.listIterator(0);
-    assertFalse(iterator.hasPrevious());
+
+    // when
+    boolean isHasPrevious = iterator.hasPrevious();
+
+    // then
+    assertFalse(isHasPrevious);
   }
 
   @Test
-  void test_iterator_with_index_hasPrevious_no_empty_Collection() {
+  void testIteratorWithIndexHasPreviousNoEmptyCollection() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     ListIterator<String> iterator = myArray.listIterator(1);
-    assertTrue(iterator.hasPrevious());
+
+    // when
+    boolean isHasPrevious = iterator.hasPrevious();
+
+    // then
+    assertTrue(isHasPrevious);
   }
 
   @Test
-  void test_iterator_with_index_next_no_empty_Collection() {
-    String[] table = {"raz", "dwa", "trzy", "cztery"};
+  void testIteratorWithIndexHasPreviousNoEmptyCollectionOneNullElement() {
+    // given
+    String[] table = {null, "raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     ListIterator<String> iterator = myArray.listIterator(1);
-    assertEquals("dwa", iterator.next());
+
+    // when
+    boolean isHasPrevious = iterator.hasPrevious();
+
+    // then
+    assertFalse(isHasPrevious);
   }
 
   @Test
-  void test_iterator_with_index_previous_no_empty_Collection() {
+  void testIteratorWithIndexNextNoEmptyCollection() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     ListIterator<String> iterator = myArray.listIterator(1);
-    assertEquals("raz", iterator.previous());
+
+    // when
+    String nextString = iterator.next();
+
+    // then
+    assertEquals("dwa", nextString);
   }
 
   @Test
-  void test_iterator_with_index_next_index() {
+  void testIteratorWithIndexPreviousNoEmptyCollection() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     ListIterator<String> iterator = myArray.listIterator(1);
+
+    // when
+    String previousString = iterator.previous();
+
+    // then
+    assertEquals("raz", previousString);
+  }
+
+  @Test
+  void testIteratorWithIndexNextIndex() {
+    // given
+    String[] table = {"raz", "dwa", "trzy", "cztery"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+    ListIterator<String> iterator = myArray.listIterator(1);
+
+    // when
     iterator.next();
-    assertEquals(2, iterator.nextIndex());
+    int nextIndex = iterator.nextIndex();
+
+    // then
+    assertEquals(2, nextIndex);
   }
 
   @Test
-  void test_iterator_with_index_previous_next_index() {
+  void testIteratorWithIndexPreviousNextIndex() {
+    // given
     String[] table = {"raz", "dwa", "trzy", "cztery"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     ListIterator<String> iterator = myArray.listIterator(2);
+
+    // when
     iterator.previous();
-    assertEquals(0, iterator.previousIndex());
+    int previousIndex = iterator.previousIndex();
+
+    // then
+    assertEquals(0, previousIndex);
   }
 
   @Test
-  void test_iterator_with_index_add() {
+  void testIteratorWithIndexAdd() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     ListIterator<String> iterator = myArray.listIterator(1);
+
+    // when
     iterator.add("add");
+
+    // then
     assertEquals(4, myArray.size());
     assertEquals("add", myArray.get(1));
   }
 
   @Test
-  void test_iterator_with_index_set() {
+  void testIteratorWithIndexSet() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     ListIterator<String> iterator = myArray.listIterator(1);
+
+    // when
     iterator.set("add");
+
+    // then
     assertEquals("add", myArray.get(1));
   }
 
   @Test
-  void test_iterator_with_index_remove() {
+  void testIteratorWithIndexRemove() {
+    // given
     String[] table = {"raz", "dwa", "trzy"};
     MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
     String[] subTable = {"raz", "trzy"};
     MyArrayList<String> subMyArray = new MyArrayList<String>(Arrays.asList(subTable));
     ListIterator<String> iterator = myArray.listIterator(1);
+
+    // when
     iterator.remove();
+
+    // then
     assertEquals(subMyArray, myArray);
+  }
+
+  @Test
+  void testClear() {
+    // given
+    String[] table = {"raz", "dwa", "trzy"};
+    MyArrayList<String> myArray = new MyArrayList<String>(Arrays.asList(table));
+
+    // when
+    myArray.clear();
+
+    // then
+    assertEquals(0, myArray.size());
   }
 
 }

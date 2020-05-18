@@ -10,18 +10,16 @@ import java.util.function.UnaryOperator;
 
 public class MyArrayList<T> implements List<T> {
 
-  private T[] tempTable;
+  private T[] dataTable;
   private int size;
 
   public MyArrayList() {
-    tempTable = (T[]) new Object[0];
-    size = 0;
+    clear();
   }
 
-  public MyArrayList(Collection<? extends T> c) {
-
-    tempTable = (T[]) c.toArray();
-    size = tempTable.length;
+  public MyArrayList(Collection<? extends T> collection) {
+    dataTable = (T[]) collection.toArray();
+    size = dataTable.length;
   }
 
   public int size() {
@@ -32,9 +30,9 @@ public class MyArrayList<T> implements List<T> {
     return size == 0;
   }
 
-  public boolean contains(final Object o) {
-    for (T element : tempTable) {
-      if (element.equals(o)) {
+  public boolean contains(final Object object) {
+    for (T element : dataTable) {
+      if (element.equals(object)) {
         return true;
       }
     }
@@ -42,36 +40,39 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public Object[] toArray() {
-    return Arrays.copyOf(tempTable, size);
+    return Arrays.copyOf(dataTable, size);
   }
 
-  public <T1> T1[] toArray(final T1[] a) {
-    if (a.length < size) {
-      return (T1[]) Arrays.copyOf(tempTable, size, a.getClass());
+  public <T1> T1[] toArray(final T1[] t1Table) {
+    if (t1Table.length < size) {
+      return (T1[]) Arrays.copyOf(dataTable, size, t1Table.getClass());
     }
-    System.arraycopy(tempTable, 0, a, 0, size);
-    if (a.length > size) {
-      a[size] = null;
+    System.arraycopy(dataTable, 0, t1Table, 0, size);
+    if (t1Table.length > size) {
+      t1Table[size] = null;
     }
-    return a;
+    return t1Table;
   }
 
-  public boolean add(final T t) {
-    add(size, t);
+  public boolean add(final T element) {
+    add(size, element);
     return true;
   }
 
   public void add(final int index, final T element) {
+    if (index < 0 || index > size) {
+      throw new IndexOutOfBoundsException("index: " + index);
+    }
     Object[] createTable = new Object[size + 1];
-    System.arraycopy(tempTable, 0, createTable, 0, index);
+    System.arraycopy(dataTable, 0, createTable, 0, index);
     createTable[index] = element;
-    System.arraycopy(tempTable, index, createTable, index + 1, size - index);
+    System.arraycopy(dataTable, index, createTable, index + 1, size - index);
     size++;
-    tempTable = (T[]) createTable;
+    dataTable = (T[]) createTable;
   }
 
-  public boolean remove(final Object o) {
-    int index = indexOf(o);
+  public boolean remove(final Object object) {
+    int index = indexOf(object);
     if (!(index == -1)) {
       remove(index);
       return true;
@@ -81,65 +82,76 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public T remove(final int index) {
+    if (index < 0 || index >= size) {
+      throw new IndexOutOfBoundsException("index: " + index);
+    }
     Object[] createTable = new Object[size - 1];
-    System.arraycopy(tempTable, 0, createTable, 0, index);
-    System.arraycopy(tempTable, index + 1, createTable, index, (size - 1) - index);
+    System.arraycopy(dataTable, 0, createTable, 0, index);
+    System.arraycopy(dataTable, index + 1, createTable, index, (size - 1) - index);
     size--;
-    T toRemove = tempTable[index];
-    tempTable = (T[]) createTable;
+    T toRemove = dataTable[index];
+    dataTable = (T[]) createTable;
     return toRemove;
   }
 
-  public boolean removeAll(final Collection<?> c) {
-    Objects.requireNonNull(c);
+  public boolean removeAll(final Collection<?> collection) {
+    Objects.requireNonNull(collection);
     boolean result = false;
-    for (Object o : c) {
-      while (this.contains(o)) {
-        this.remove(o);
-        result = true;
+    int index;
+    for (Object object : collection) {
+      for (int i = 0; i < size; i++) {
+        if (object.equals(dataTable[i])) {
+          dataTable[i] = null;
+          result = true;
+        }
       }
     }
+    dataTable = clean(dataTable);
+    size = dataTable.length;
     return result;
   }
 
-  public boolean containsAll(final Collection<?> c) {
-    Objects.requireNonNull(c);
+  public boolean containsAll(final Collection<?> collection) {
+    Objects.requireNonNull(collection);
     int index = 0;
-    List<Object> list = (List<Object>) c;
-    for (Object o : list) {
-      if (this.contains(o)) {
-        index++;
+    List<Object> list = (List<Object>) collection;
+    for (Object object : list) {
+      for (int i = 0; i < size; i++) {
+        if (object.equals(dataTable[i])) {
+          index++;
+          break;
+        }
       }
     }
 
-    return index >= c.size();
+    return index >= collection.size();
   }
 
-  public boolean addAll(final Collection<? extends T> c) {
-    return addAll(size, c);
+  public boolean addAll(final Collection<? extends T> collection) {
+    return addAll(size, collection);
   }
 
-  public boolean addAll(final int index, final Collection<? extends T> c) {
-    Objects.requireNonNull(c);
+  public boolean addAll(final int index, final Collection<? extends T> collection) {
     if (index < 0 || index > size) {
-      return false;
+      throw new IndexOutOfBoundsException("index: " + index);
     }
+    Objects.requireNonNull(collection);
     int i = index;
-    for (Object o : c) {
-      this.add(i, (T) o);
+    for (Object object : collection) {
+      this.add(i, (T) object);
       i++;
     }
     return true;
   }
 
-  public boolean retainAll(final Collection<?> c) {
-    Objects.requireNonNull(c);
+  public boolean retainAll(final Collection<?> collection) {
+    Objects.requireNonNull(collection);
     boolean result = false;
-    for (Object elTemp : tempTable) {
-      if (c.contains(elTemp)) {
+    for (Object element : dataTable) {
+      if (collection.contains(element)) {
         continue;
       } else {
-        this.remove(elTemp);
+        this.remove(element);
         result = true;
       }
     }
@@ -148,46 +160,49 @@ public class MyArrayList<T> implements List<T> {
 
   public void replaceAll(final UnaryOperator<T> operator) {
     for (int i = 0; i < size; i++) {
-      tempTable[i] = operator.apply(tempTable[i]);
+      dataTable[i] = operator.apply(dataTable[i]);
     }
   }
 
-  public void sort(final Comparator<? super T> c) {
-    Arrays.sort(tempTable, c);
+  public void sort(final Comparator<? super T> comparator) {
+    Arrays.sort(dataTable, comparator);
   }
 
   public void clear() {
-    tempTable = (T[]) new Object[0];
+    dataTable = (T[]) new Object[100];
     size = 0;
   }
 
   public T get(final int index) {
-    return tempTable[index];
+    if (index < 0 || index >= size) {
+      throw new IndexOutOfBoundsException("index: " + index);
+    }
+    return dataTable[index];
   }
 
   public T set(final int index, final T element) {
-    tempTable[index] = element;
+    dataTable[index] = element;
     return element;
   }
 
-  public int indexOf(final Object o) {
-    if (o == null) {
+  public int indexOf(final Object object) {
+    if (object == null) {
       return -1;
     }
     for (int i = 0; i < size; i++) {
-      if (tempTable[i].equals(o)) {
+      if (dataTable[i].equals(object)) {
         return i;
       }
     }
     return -1;
   }
 
-  public int lastIndexOf(final Object o) {
-    if (o == null) {
+  public int lastIndexOf(final Object object) {
+    if (object == null) {
       return -1;
     }
     for (int i = size - 1; i >= 0; i--) {
-      if (tempTable[i].equals(o)) {
+      if (dataTable[i].equals(object)) {
         return i;
       }
     }
@@ -211,28 +226,13 @@ public class MyArrayList<T> implements List<T> {
     T[] table = (T[]) new Object[toIndex - fromIndex];
 
     for (int i = fromIndex; i < toIndex; i++) {
-      table[i - fromIndex] = tempTable[i];
+      table[i - fromIndex] = dataTable[i];
     }
     return new MyArrayList<T>(Arrays.asList(table));
   }
 
   public Iterator<T> iterator() {
-
-    Iterator<T> iterator = new Iterator<T>() {
-
-      int index = 0;
-
-      @Override
-      public boolean hasNext() {
-        return (index < size) && (tempTable[index] != null);
-      }
-
-      @Override
-      public T next() {
-        return tempTable[index++];
-      }
-    };
-    return iterator;
+    return new MyIterator<T>(this);
   }
 
   public ListIterator<T> listIterator() {
@@ -240,73 +240,19 @@ public class MyArrayList<T> implements List<T> {
   }
 
   public ListIterator<T> listIterator(final int index) {
-
-    ListIterator<T> listIterator = new ListIterator<T>() {
-
-      int anInt = index;
-
-      @Override
-      public boolean hasNext() {
-        if ((anInt > size) || (anInt < 0)) {
-          throw new IndexOutOfBoundsException("index = " + index);
-        }
-        return (anInt < size) && (tempTable[anInt] != null);
-      }
-
-      @Override
-      public T next() {
-        return tempTable[anInt++];
-      }
-
-      @Override
-      public boolean hasPrevious() {
-        if ((anInt > size) || (anInt < 0)) {
-          throw new IndexOutOfBoundsException("index = " + index);
-        }
-        return (anInt > 0) && (tempTable[anInt] != null);
-      }
-
-      @Override
-      public T previous() {
-        return tempTable[--anInt];
-      }
-
-      @Override
-      public int nextIndex() {
-        return anInt;
-      }
-
-      @Override
-      public int previousIndex() {
-        return anInt - 1;
-      }
-
-      @Override
-      public void remove() {
-        MyArrayList.this.remove(anInt);
-      }
-
-      @Override
-      public void set(T t) {
-        MyArrayList.this.set(anInt, t);
-      }
-
-      @Override
-      public void add(T t) {
-        MyArrayList.this.add(anInt, t);
-      }
-    };
-
-    return listIterator;
+    if (index < 0 || index > size) {
+      throw new IndexOutOfBoundsException("index: " + index);
+    }
+    return new MyListIterator<T>(index, this);
   }
 
   public Spliterator<T> spliterator() {
-    return Arrays.spliterator(tempTable);
+    return Arrays.spliterator(dataTable);
   }
 
   @Override
   public int hashCode() {
-    return 17 * Arrays.hashCode(tempTable) + 31 * size;
+    return 17 * Arrays.hashCode(dataTable) + 31 * size;
   }
 
   @Override
@@ -321,15 +267,104 @@ public class MyArrayList<T> implements List<T> {
       return true;
     }
     List<T> other = (List<T>) obj;
-    if (other.size() != tempTable.length) {
+    if (other.size() != dataTable.length) {
       return false;
     }
     for (int i = 0; i < other.size(); i++) {
-      if (!other.get(i).equals(tempTable[i])) {
+      if (!other.get(i).equals(dataTable[i])) {
         return false;
       }
     }
     return true;
+  }
+
+  private T[] clean(final T[] table) {
+    int readIndex;
+    int writeIndex;
+    final int sizeTable = readIndex = writeIndex = table.length;
+    while (readIndex > 0) {
+      final T s = table[--readIndex];
+      if (Objects.nonNull(s)) {
+        table[--writeIndex] = s;
+      }
+    }
+    return Arrays.copyOfRange(table, writeIndex, sizeTable);
+  }
+
+  class MyIterator<T> implements Iterator<T> {
+
+    private final List<T> list;
+    private int index = 0;
+
+    MyIterator(List<T> list) {
+      this.list = list;
+    }
+
+    @Override
+    public boolean hasNext() {
+      return (index < list.size()) && (list.get(index) != null);
+    }
+
+    @Override
+    public T next() {
+      return list.get(index++);
+    }
+  }
+
+  class MyListIterator<T> implements ListIterator<T> {
+
+    private final List<T> list;
+    private int index;
+
+    MyListIterator(int index, List<T> list) {
+      this.index = index;
+      this.list = list;
+    }
+
+    @Override
+    public boolean hasNext() {
+      return (index < list.size()) && (list.get(index) != null);
+    }
+
+    @Override
+    public T next() {
+      return list.get(index++);
+    }
+
+    @Override
+    public boolean hasPrevious() {
+      return (index > 0) && (list.get(index - 1) != null);
+    }
+
+    @Override
+    public T previous() {
+      return list.get(--index);
+    }
+
+    @Override
+    public int nextIndex() {
+      return index;
+    }
+
+    @Override
+    public int previousIndex() {
+      return index - 1;
+    }
+
+    @Override
+    public void remove() {
+      list.remove(index);
+    }
+
+    @Override
+    public void set(T t) {
+      list.set(index, t);
+    }
+
+    @Override
+    public void add(T t) {
+      list.add(index, t);
+    }
   }
 
 }
